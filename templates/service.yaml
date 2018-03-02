@@ -69,7 +69,7 @@ Resources:
           Subnets: !Ref Subnets
       LoadBalancers:
         - ContainerName: simple-app
-          ContainerPort: 80
+          ContainerPort: 6004
           TargetGroupArn: !Ref TargetGroup
 
   EC2Service:
@@ -82,7 +82,7 @@ Resources:
       LaunchType: EC2
       LoadBalancers:
         - ContainerName: simple-app
-          ContainerPort: 80
+          ContainerPort: 6004
           TargetGroupArn: !Ref TargetGroup
 
   TaskDefinition:
@@ -97,18 +97,19 @@ Resources:
       ExecutionRoleArn: !Ref TaskExecutionRole
       ContainerDefinitions:
         - Name: simple-app
-          Image: amazon/amazon-ecs-sample
+          Image: gmd/cas-web-app
           EntryPoint:
-            - /usr/sbin/apache2
-            - -D
-            - FOREGROUND
+            - npm
+            - run
+            - dev
+            - --
           Essential: true
           Memory: 256
           MountPoints:
             - SourceVolume: my-vol
-              ContainerPath: /var/www/my-vol
+              ContainerPath: /usr/src/app
           PortMappings:
-            - ContainerPort: 80
+            - ContainerPort: 6004
           LogConfiguration:
             LogDriver: awslogs
             Options:
